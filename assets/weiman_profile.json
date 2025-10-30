@@ -1,0 +1,101 @@
+{
+  "name": "Andrew Weiman",
+  "date": "October 24, 2025",
+  "personCode": [
+    {
+      "id": 3,
+      "label": "Strategic Decisions"
+    },
+    {
+      "id": 6,
+      "label": "Production Efficiency"
+    },
+    {
+      "id": 7,
+      "label": "Artistic Creativity"
+    }
+  ],
+  "motivations": "Motivated to solve big problems, take specific action, and create something unique. Wants to be involved end-to-end while also seeing quick results and producing something extraordinary; benefits from resolving those tensions and thinking like a strategic/urban planner to integrate all aspects and follow-through.",
+  "abilities": "Primary competencies: detailed analysis, strategic thinking, and creative thinking. Drawn to teams that focus on Intelligence, Strategy, and Development; prides self on solving complex problems, planning smartly, and creating new products/services.",
+  "personality": "Authentic tactician focused on executing details and plans correctly; perfectionist, integrative, action-oriented. Can feel tension between analyzing and deciding, but productivity bias resolves it. May appear demanding/tough; benefits from spontaneity and flexibility to be more approachable.",
+  "modelRoles": [
+    "Planner",
+    "Tactician",
+    "Integrator"
+  ],
+  "coreTheme": "Focusing on both creative and tangible solutions: bring together large-scale and creative plans and personally ensure effective implementation.",
+  "leadershipAnchors": [
+    "Sets strategic direction",
+    "Makes hands-on decisions",
+    "Initiates and implements change"
+  ],
+  "idealJobFunctions": [
+    "Strategizing (Integrating, Problem-Solving, Advising)",
+    "Creating (Developing, Designing, Inventing)",
+    "Researching (Analyzing, Forecasting, Investigating)"
+  ],
+  "keyTraits": [
+    {
+      "trait": "Accomplishment-oriented",
+      "description": "Practical-minded; wants tangible accomplishment; hands-on and effective."
+    },
+    {
+      "trait": "Very inquisitive",
+      "description": "Curious; likes solving complex questions; digs into facts and reasons."
+    },
+    {
+      "trait": "Big-picture thinker",
+      "description": "Sees all sides; integrates findings; enjoys managing others to get things done."
+    }
+  ],
+  "cautionAreas": [
+    {
+      "area": "Frustrated when not seeing results",
+      "description": "Prefers quick outcomes; may show frustration when progress is slow."
+    },
+    {
+      "area": "Might over-analyze everything",
+      "description": "Holds onto details; may delay decisions by seeking more data."
+    },
+    {
+      "area": "Tends to think you are right",
+      "description": "Confidence in reasoned conclusions can limit openness to other views."
+    }
+  ],
+  "educationKeys": [
+    "Team Dynamics",
+    "Stress Management",
+    "Providing and Accepting Feedback"
+  ],
+  "teamInsights": {
+    "leader": {
+      "styleTraits": [
+        "Results-oriented",
+        "Expert",
+        "Strategic guide"
+      ],
+      "styleChallenges": [
+        "Remember back to when you were new",
+        "Explain where your knowledge came from",
+        "Have patience explaining the big picture"
+      ]
+    },
+    "member": {
+      "styleTraits": [
+        "Direct",
+        "Inquisitive",
+        "Determined to find solutions"
+      ],
+      "styleChallenges": [
+        "Take some time to build a friendship",
+        "Better understand your team leader’s background",
+        "Approach your team leader's suggestions with an open ear"
+      ]
+    }
+  },
+  "culturalPreferences": [
+    "Professional/Strategic",
+    "Creative/Experimental",
+    "Hands-On/Structured"
+  ]
+}
