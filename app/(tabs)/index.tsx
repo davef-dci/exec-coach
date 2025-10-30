@@ -9,8 +9,9 @@ const profileData = require("../../assets/weiman_profile.json");
 const KEY_LAST_EXPANDED = "execCoach:lastExpandedSkill";
 const KEY_LAST_CHALLENGE = "execCoach:lastDailyChallenge";
 // --- Remote Coach Endpoint (Vercel) ---
-const ASK_COACH_URL =
-  "https://exec-coach-gwb19xdtu-dave-franchinos-projects.vercel.app/api/ask-coach";
+// --- Remote Coach Endpoint (Vercel) ---
+const ASK_COACH_URL = "https://exec-coach.vercel.app/api/ask-coach";
+
 
 
 
@@ -99,15 +100,17 @@ async function onAskCoach() {
   const q = askText.trim();
   if (!q) return;
 
-  const loadingMsg = "⏳ Thinking… contacting remote coach";
-  setAskReply(loadingMsg);
+  setAskReply("⏳ Thinking…");
 
   const answer = await askCoachRemote(q, profileData);
 
-  // Prefix to confirm this came from the remote endpoint
-  const finalAns = `REMOTE ✅\n${answer}`;
-  setAskReply(finalAns);
-  AsyncStorage.setItem("execCoach:lastAskReply", JSON.stringify(finalAns));
+  if (answer.startsWith("Error:") || answer.startsWith("Network error:")) {
+    setAskReply("⚠️ Sorry — something went wrong connecting to the coach. Try again in a moment.");
+  } else {
+    setAskReply(answer);
+    AsyncStorage.setItem("execCoach:lastAskReply", JSON.stringify(answer));
+  }
+
   setAskText("");
 }
 
@@ -181,11 +184,11 @@ async function onAskCoach() {
       <StatusBar style="dark" />
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <View style={{ gap: 6 }}>
-          <Text style={{ fontSize: 24, fontWeight: "700" }}>
-            Executive Coach (MVP)
+          <Text style={{ fontSize: 36, fontWeight: "700" }}>
+            Andrew Weiman's Virtual AI Executive Coach (MVP)
           </Text>
           <Text style={{ fontSize: 16 }}>
-            Loaded profile for:{" "}
+            Loaded profile for:{" "} - Here is your profile summary:
             <Text style={{ fontWeight: "600" }}>{displayName}</Text>
           </Text>
           <Text style={{ fontSize: 16 }}>
@@ -211,7 +214,7 @@ async function onAskCoach() {
           
         </View>
 
-        <Card title="Ask the Coach">
+        <Card title="Ask Andrew's Coach a question!">
 <TextInput
   value={askText}
   onChangeText={setAskText}

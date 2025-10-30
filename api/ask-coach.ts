@@ -3,11 +3,17 @@
 
 
 const SYS = (coreTheme: string) => `
-You are an executive coach. Ground every answer in the person's profile theme:
+You are an executive coach for Andrew Weiman. Ground every answer in the Andrew's profile theme:
 "${coreTheme}"
 
-Write concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.
+Write concise, practical guidance with 3–5 bullet points.
+Personalize your responses by using Andrew's first name in the response. 
+Make clear references to the strengths and characteristics listed in their profile. 
+Conclude with a 1-sentence nudge to act in the next 15 minutes.
 `;
+
+const VERSION = "ask-coach:2025-10-29-01"; // bump this whenever you deploy
+
 
 export default async function handler(req: any, res: any) {
 
@@ -61,10 +67,11 @@ export default async function handler(req: any, res: any) {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         temperature: 0.6,
-        messages: [
-          { role: "system", content: `You are an executive coach. Ground every answer in the person's profile theme: "${coreTheme}"\n\nWrite concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.` },
-          { role: "user", content: `Profile (JSON): ${JSON.stringify(userContext)}\n\nQuestion: ${question}` },
-        ],
+messages: [
+  { role: "system", content: SYS(coreTheme) },
+  { role: "user", content: `Profile (JSON): ${JSON.stringify(userContext)}\n\nQuestion: ${question}` },
+],
+
       }),
     });
 
@@ -76,7 +83,12 @@ export default async function handler(req: any, res: any) {
 
     const answer = data?.choices?.[0]?.message?.content ?? "No answer generated.";
     res.setHeader("Access-Control-Allow-Origin", "*");
-    return res.status(200).json({ answer });
+    return res.status(200).json({
+  answer,
+  version: VERSION,
+  systemSnippet: SYS(coreTheme).slice(0, 80) // short echo so we know which prompt is active
+});
+
   } catch (e: any) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(500).send(`Server error: ${e?.message || e}`);
