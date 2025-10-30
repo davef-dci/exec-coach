@@ -2,7 +2,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+
 
 const profileData = require("../../assets/weiman_profile.json");
 const KEY_LAST_EXPANDED = "execCoach:lastExpandedSkill";
@@ -48,14 +49,20 @@ export default function HomeTab() {
 
   const [dailyChallenge, setDailyChallenge] = useState<string | null>(null);
 
+  const [askText, setAskText] = useState("");
+const [askReply, setAskReply] = useState<string | null>(null);
+
+
 useEffect(() => {
   async function loadSaved() {
     try {
       const savedExpanded = await AsyncStorage.getItem("execCoach:lastExpandedSkill");
       const savedChallenge = await AsyncStorage.getItem("execCoach:lastDailyChallenge");
+      const savedAskReply = await AsyncStorage.getItem("execCoach:lastAskReply"); // ✅ add
 
       if (savedExpanded) setExpandedSkill(JSON.parse(savedExpanded));
       if (savedChallenge) setDailyChallenge(JSON.parse(savedChallenge));
+      if (savedAskReply) setAskReply(JSON.parse(savedAskReply)); // ✅ add
     } catch (err) {
       console.warn("Error loading saved data", err);
     }
@@ -64,7 +71,18 @@ useEffect(() => {
 }, []);
 
 
-
+function onAskCoach() {
+  if (!askText.trim()) return;
+  const reply =
+    `Based on your theme — “${coreTheme}” — try this:\n` +
+    `• Restate your question in one sentence.\n` +
+    `• Identify one concrete next action you can do in 15 minutes.\n` +
+    `• Do it, then write one learning.\n\n` +
+    `Your question: "${askText.trim()}"`;
+  setAskReply(reply);
+  AsyncStorage.setItem("execCoach:lastAskReply", JSON.stringify(reply)); // ✅ add
+  setAskText("");
+}
 
   function onExpandSkill() {
   if (!traits.length) {
@@ -120,6 +138,10 @@ useEffect(() => {
       : "Pick one small improvement you can ship before noon. Make it visible, even if rough.";
   }
 
+
+
+
+
   setDailyChallenge(challenge);
   // SAVE to storage
   AsyncStorage.setItem("execCoach:lastDailyChallenge", JSON.stringify(challenge));
@@ -155,7 +177,39 @@ useEffect(() => {
         <View style={{ gap: 12, marginTop: 12 }}>
           <ActionButton label="Expand a Skill" onPress={onExpandSkill} />
           <ActionButton label="Challenge of the Day" onPress={onChallengeOfDay} />
+
+
+
+          
         </View>
+
+        <Card title="Ask the Coach">
+  <TextInput
+    value={askText}
+    onChangeText={setAskText}
+    placeholder="Describe a challenge or decision…"
+    multiline
+    style={{
+      borderWidth: 1,
+      borderColor: "#e5e7eb",
+      borderRadius: 8,
+      padding: 10,
+      minHeight: 60,
+    }}
+  />
+  <View style={{ height: 8 }} />
+  <ActionButton
+    label="Get Advice"
+    onPress={onAskCoach}
+  />
+</Card>
+
+{askReply && (
+  <Card title="Coach Reply">
+    <Text style={{ fontSize: 16, lineHeight: 22 }}>{askReply}</Text>
+  </Card>
+)}
+
 
         {expandedSkill && (
           <Card title={`Expanded: ${expandedSkill.title}`}>
@@ -265,4 +319,6 @@ async function loadJson<T>(key: string): Promise<T | null> {
     return null;
   }
 }
+
+
 
