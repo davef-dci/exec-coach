@@ -2,12 +2,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 
 
 const profileData = require("../../assets/weiman_profile.json");
 const KEY_LAST_EXPANDED = "execCoach:lastExpandedSkill";
 const KEY_LAST_CHALLENGE = "execCoach:lastDailyChallenge";
+// --- Remote Coach Endpoint (Vercel) ---
+const ASK_COACH_URL =
+  "https://exec-coach-gwb19xdtu-dave-franchinos-projects.vercel.app/api/ask-coach";
+
 
 
 // Types that reflect your KnowingMe JSON
@@ -33,6 +37,26 @@ const textOr = (...vals: (string | undefined)[]) =>
 
 const pickOne = <T,>(arr: T[] | undefined): T | null =>
   arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+
+async function askCoachRemote(question: string, profile: any): Promise<string> {
+  try {
+    const resp = await fetch(ASK_COACH_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, profile }),
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      return `Error: ${resp.status} ${text}`;
+    }
+    const data = (await resp.json()) as { answer?: string };
+    return data.answer ?? "No answer generated.";
+  } catch (e: any) {
+    return `Network error: ${e?.message || e}`;
+  }
+}
+
+
 
 export default function HomeTab() {
   const profile = profileData as Profile;
@@ -71,18 +95,22 @@ useEffect(() => {
 }, []);
 
 
-function onAskCoach() {
-  if (!askText.trim()) return;
-  const reply =
-    `Based on your theme — “${coreTheme}” — try this:\n` +
-    `• Restate your question in one sentence.\n` +
-    `• Identify one concrete next action you can do in 15 minutes.\n` +
-    `• Do it, then write one learning.\n\n` +
-    `Your question: "${askText.trim()}"`;
-  setAskReply(reply);
-  AsyncStorage.setItem("execCoach:lastAskReply", JSON.stringify(reply)); // ✅ add
+async function onAskCoach() {
+  const q = askText.trim();
+  if (!q) return;
+
+  const loadingMsg = "⏳ Thinking… contacting remote coach";
+  setAskReply(loadingMsg);
+
+  const answer = await askCoachRemote(q, profileData);
+
+  // Prefix to confirm this came from the remote endpoint
+  const finalAns = `REMOTE ✅\n${answer}`;
+  setAskReply(finalAns);
+  AsyncStorage.setItem("execCoach:lastAskReply", JSON.stringify(finalAns));
   setAskText("");
 }
+
 
   function onExpandSkill() {
   if (!traits.length) {
@@ -184,24 +212,50 @@ function onAskCoach() {
         </View>
 
         <Card title="Ask the Coach">
-  <TextInput
-    value={askText}
-    onChangeText={setAskText}
-    placeholder="Describe a challenge or decision…"
-    multiline
-    style={{
-      borderWidth: 1,
-      borderColor: "#e5e7eb",
-      borderRadius: 8,
-      padding: 10,
-      minHeight: 60,
-    }}
-  />
+<TextInput
+  value={askText}
+  onChangeText={setAskText}
+  placeholder="Describe a challenge or decision…"
+  multiline
+  onKeyPress={(e) => {
+    // On web/desktop: Enter submits; Shift+Enter makes a newline
+    if (Platform.OS === "web" && e.nativeEvent.key === "Enter" && !e.shiftKey) {
+      e.preventDefault?.();
+      onAskCoach();
+    }
+  }}
+  blurOnSubmit={false}
+  style={{
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    padding: 10,
+    minHeight: 60,
+  }}
+/>
+
   <View style={{ height: 8 }} />
-  <ActionButton
-    label="Get Advice"
-    onPress={onAskCoach}
-  />
+<ActionButton
+  label="Get Advice"
+  onPress={onAskCoach}
+  disabled={!askText.trim()}
+/>
+
+<ActionButton
+  label="Clear Saved"
+  onPress={async () => {
+    await AsyncStorage.multiRemove([
+      "execCoach:lastExpandedSkill",
+      "execCoach:lastDailyChallenge",
+      "execCoach:lastAskReply",
+    ]);
+    setExpandedSkill(null);
+    setDailyChallenge(null);
+    setAskReply(null);
+  }}
+/>
+
+
 </Card>
 
 {askReply && (
@@ -255,25 +309,46 @@ function onAskCoach() {
   );
 }
 
-function ActionButton({ label, onPress }: { label: string; onPress: () => void }) {
+function ActionButton({
+  label,
+  onPress,
+  disabled = false,
+}: {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+}) {
   return (
     <Pressable
-      onPress={onPress}
+      onPress={!disabled ? onPress : undefined}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? "#e9e9ff" : "#eef",
+        backgroundColor: disabled
+          ? "#ddd"
+          : pressed
+          ? "#e9e9ff"
+          : "#eef",
         paddingVertical: 14,
         paddingHorizontal: 16,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: "#c9ccff",
+        borderColor: disabled ? "#ccc" : "#c9ccff",
+        opacity: disabled ? 0.6 : 1,
       })}
     >
-      <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "600" }}>
+      <Text
+        style={{
+          textAlign: "center",
+          fontSize: 16,
+          fontWeight: "600",
+          color: disabled ? "#777" : "#000",
+        }}
+      >
         {label}
       </Text>
     </Pressable>
   );
 }
+
 
 function Card({
   title,
