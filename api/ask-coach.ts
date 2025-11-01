@@ -2,8 +2,9 @@
 // File: api/ask-coach.ts
 
 export const config = {
-  runtime: "nodejs18.x",
+  runtime: "nodejs",
 };
+
 
 
 const SYS = (coreTheme: string) => `
