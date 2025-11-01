@@ -320,7 +320,7 @@ async function onAskCoach() {
 />
 
 <ActionButton
-  label="Clear Saved"
+  label="Clear this discussion and start Fresh"
   onPress={async () => {
     await AsyncStorage.multiRemove([
       "execCoach:lastExpandedSkill",
