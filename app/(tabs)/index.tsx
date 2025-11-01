@@ -10,7 +10,9 @@ const KEY_LAST_EXPANDED = "execCoach:lastExpandedSkill";
 const KEY_LAST_CHALLENGE = "execCoach:lastDailyChallenge";
 // --- Remote Coach Endpoint (Vercel) ---
 // --- Remote Coach Endpoint (Vercel) ---
-const ASK_COACH_URL = "https://exec-coach.vercel.app/api/ask-coach";
+// --- Remote Coach Endpoint (Vercel) ---
+const ASK_COACH_URL = "/api/ask-coach";
+
 
 
 
