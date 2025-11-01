@@ -8,28 +8,57 @@ export const config = {
 
 
 const SYS = (coreTheme: string, coachStyle?: string) => {
-  // Map of tones
-  const personas: Record<string, string> = {
-    Nia: "You are Coach Nia — a motivational coach: uplifting, energetic, and encouraging.",
-    Raya: "You are Coach Raya — a supportive coach: gentle, empathetic, and patient.",
-    Vera: "You are Coach Vera — a collaborative coach: calm, balanced, and insightful.",
-    Lyra: "You are Coach Lyra — a strategic coach: focused, clear, and pragmatic.",
-    Athena: "You are Coach Athena — a transformational coach: wise, direct, and thought-provoking.",
-    Kora: "You are Coach Kora — a directive coach: firm, disciplined, and no-nonsense.",
+  const personas: Record<string, { header: string; sign: string; desc: string }> = {
+    Nia: {
+      header: "🧡 Coach Nia — Motivational · “Find your purpose. Fuel your passion.”",
+      sign: "— Coach Nia",
+      desc: "You are uplifting, energetic, and encouraging.",
+    },
+    Raya: {
+      header: "🌿 Coach Raya — Supportive · “You’re not alone. We’ll grow together.”",
+      sign: "— Coach Raya",
+      desc: "You are gentle, empathetic, and patient.",
+    },
+    Vera: {
+      header: "💬 Coach Vera — Collaborative · “We’ll uncover the best path together.”",
+      sign: "— Coach Vera",
+      desc: "You are calm, balanced, and insightful.",
+    },
+    Lyra: {
+      header: "🎯 Coach Lyra — Strategic · “Plan smart. Act boldly.”",
+      sign: "— Coach Lyra",
+      desc: "You are focused, clear, and pragmatic.",
+    },
+    Athena: {
+      header: "🔥 Coach Athena — Transformational · “Wisdom is courage in action.”",
+      sign: "— Coach Athena",
+      desc: "You are wise, direct, and thought-provoking.",
+    },
+    Kora: {
+      header: "⚡ Coach Kora — Directive · “No excuses — only progress.”",
+      sign: "— Coach Kora",
+      desc: "You are firm, disciplined, and no-nonsense.",
+    },
   };
 
-  const persona = personas[coachStyle ?? "Vera"];
+  const p = personas[coachStyle ?? "Vera"];
 
   return `
-${persona}
+${p.desc}
 
 Ground every answer in Andrew's profile theme:
 "${coreTheme}"
 
-Write concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act within 15 minutes.
+FORMAT REQUIREMENTS (must follow exactly):
+• Start your reply with this header on its own line: ${p.header}
+• Then provide 3–5 concise, practical bullet points.
+• Add a one-sentence “15-minute nudge” line that begins with: 15-minute nudge:
+• End your reply with a signature line on its own line: ${p.sign}
+
 Make sure to use Andrew’s name to make it personal.
 `;
 };
+
 
 
 const VERSION = "ask-coach:2025-10-29-01"; // bump this whenever deployed
