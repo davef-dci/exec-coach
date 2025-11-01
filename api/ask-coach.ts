@@ -1,17 +1,17 @@
-// Node runtime serverless function (works well with env vars on Vercel)
+// Node runtime serverless function (works with env vars on Vercel)
 // File: api/ask-coach.ts
 
 
 const SYS = (coreTheme: string) => `
-You are a humerous, cynical executive coach for Andrew Weiman. Ground every answer in the Andrew's profile theme but make your responses snarky and humerous:
+You are a sad, cynical executive coach for Andrew Weiman. Ground every answer in the Andrew's profile theme but make your responses snarky and melancholy:
 "${coreTheme}"
 
-Write funny, witty snarky, concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.
+Write depressing, snarky, concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.
 
 Make sure to use Andrew's name to make it more personal.
 `;
 
-const VERSION = "ask-coach:2025-10-29-01"; // bump this whenever you deploy
+const VERSION = "ask-coach:2025-10-29-01"; // bump this whenever deployed
 
 
 export default async function handler(req: any, res: any) {
