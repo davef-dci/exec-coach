@@ -49,14 +49,18 @@ const textOr = (...vals: (string | undefined)[]) =>
 const pickOne = <T,>(arr: T[] | undefined): T | null =>
   arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
 
-async function askCoachRemote(question: string, profile: any, coachStyle: string): Promise<string> 
- {
+// add param "formatMode"
+async function askCoachRemote(
+  question: string,
+  profile: any,
+  coachStyle: string,
+  formatMode: "structured" | "free"
+): Promise<string> {
   try {
-    const resp = await fetch(ASK_COACH_URL, {
+    const resp = await fetch("/api/ask-coach", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, profile, coachStyle }),
-
+      body: JSON.stringify({ question, profile, coachStyle, formatMode }),
     });
     if (!resp.ok) {
       const text = await resp.text();
@@ -123,13 +127,18 @@ useEffect(() => {
 }, []);
 
 
+// app/(tabs)/index.tsx
+
 async function onAskCoach() {
   const q = askText.trim();
   if (!q) return;
 
   setAskReply("⏳ Thinking…");
 
-  const answer = await askCoachRemote(q, profileData, coachStyle);
+  // If we already have a reply, treat this as a follow-up -> free mode
+  const formatMode = askReply ? "free" : "structured";
+
+  const answer = await askCoachRemote(q, profileData, coachStyle, formatMode);
 
   if (answer.startsWith("Error:") || answer.startsWith("Network error:")) {
     setAskReply("⚠️ Sorry — something went wrong connecting to the coach. Try again in a moment.");
@@ -140,6 +149,7 @@ async function onAskCoach() {
 
   setAskText("");
 }
+
 
 
 //   function onExpandSkill() {
