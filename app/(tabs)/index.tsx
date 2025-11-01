@@ -2,7 +2,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
-import { Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { Image, Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+const coachThumbs = {
+  Nia: require("../../assets/coaches/nia.jpg"),
+  Raya: require("../../assets/coaches/raya.jpg"),
+  Vera: require("../../assets/coaches/vera.jpg"),
+  Lyra: require("../../assets/coaches/lyra.jpg"),
+  Athena: require("../../assets/coaches/athena.jpg"),
+  Kora: require("../../assets/coaches/kora.jpg"),
+};
 
 
 const profileData = require("../../assets/weiman_profile.json");
@@ -251,9 +259,23 @@ async function onAskCoach() {
             backgroundColor: selected ? "#eef" : "#fff",
           }}
         >
-          <Text style={{ fontWeight: "600" }}>
-            {s.key} · {s.label}
-          </Text>
+<View style={{ alignItems: "center" }}>
+  <Image
+    source={coachThumbs[s.key]}
+    style={{
+      width: 64,
+      height: 64,
+      borderRadius: 12,
+      borderWidth: selected ? 2 : 0,
+      borderColor: selected ? "#6366f1" : "transparent",
+    }}
+    resizeMode="cover"
+  />
+  <Text style={{ fontWeight: "600", marginTop: 4 }}>
+    {s.label}
+  </Text>
+</View>
+
         </Pressable>
       );
     })}
