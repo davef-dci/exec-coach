@@ -142,68 +142,68 @@ async function onAskCoach() {
 }
 
 
-  function onExpandSkill() {
-  if (!traits.length) {
-    const fallback = {
-      title: "No traits found",
-      body:
-        "Your profile doesn’t include keyTraits yet. Add keyTraits[] with { trait, description } objects.",
-    };
-    setExpandedSkill(fallback);
-    // SAVE to storage
-    AsyncStorage.setItem("execCoach:lastExpandedSkill", JSON.stringify(fallback));
-    return;
-  }
+//   function onExpandSkill() {
+//   if (!traits.length) {
+//     const fallback = {
+//       title: "No traits found",
+//       body:
+//         "Your profile doesn’t include keyTraits yet. Add keyTraits[] with { trait, description } objects.",
+//     };
+//     setExpandedSkill(fallback);
+//     // SAVE to storage
+//     AsyncStorage.setItem("execCoach:lastExpandedSkill", JSON.stringify(fallback));
+//     return;
+//   }
 
-  const t = traits[Math.floor(Math.random() * traits.length)];
-  const next = {
-    title: t.trait,
-    body:
-      textOr(t.description) ||
-      `Consider where “${t.trait}” shows up in your week. Note one concrete behavior that demonstrates it.`,
-  };
+//   const t = traits[Math.floor(Math.random() * traits.length)];
+//   const next = {
+//     title: t.trait,
+//     body:
+//       textOr(t.description) ||
+//       `Consider where “${t.trait}” shows up in your week. Note one concrete behavior that demonstrates it.`,
+//   };
 
-  setExpandedSkill(next);
-  // SAVE to storage
-  AsyncStorage.setItem("execCoach:lastExpandedSkill", JSON.stringify(next));
-}
-
-
- function onChallengeOfDay() {
-  const anchors = profile.leadershipAnchors ?? [];
-  const edus = profile.educationKeys ?? [];
-  const cautions = profile.cautionAreas ?? [];
-
-  const pick = <T,>(arr: T[]) =>
-    arr.length ? arr[Math.floor(Math.random() * arr.length)] : undefined;
-
-  const anchor = pick(anchors);
-  const edu = pick(edus);
-  const caution = pick(cautions);
-
-  let challenge =
-    (anchor &&
-      `Demonstrate “${anchor}” today: choose one decision or meeting and make a clear move that reflects it. Block 15 minutes to prep.`) ||
-    (edu &&
-      `Practice “${edu}”: identify one moment today to apply it intentionally. Write what you’ll do in 1 sentence and schedule it.`) ||
-    (caution &&
-      `Balance your caution area (“${(caution as any).area}”): define a small guardrail you’ll use in the next meeting, then reflect for 2 minutes after.`);
-
-  if (!challenge) {
-    const t = traits.length ? traits[Math.floor(Math.random() * traits.length)] : undefined;
-    challenge = t
-      ? `Apply “${t.trait}” on a live task: spend 15 minutes using it to move something forward, then capture one takeaway.`
-      : "Pick one small improvement you can ship before noon. Make it visible, even if rough.";
-  }
+//   setExpandedSkill(next);
+//   // SAVE to storage
+//   AsyncStorage.setItem("execCoach:lastExpandedSkill", JSON.stringify(next));
+// }
 
 
+//  function onChallengeOfDay() {
+//   const anchors = profile.leadershipAnchors ?? [];
+//   const edus = profile.educationKeys ?? [];
+//   const cautions = profile.cautionAreas ?? [];
+
+//   const pick = <T,>(arr: T[]) =>
+//     arr.length ? arr[Math.floor(Math.random() * arr.length)] : undefined;
+
+//   const anchor = pick(anchors);
+//   const edu = pick(edus);
+//   const caution = pick(cautions);
+
+//   let challenge =
+//     (anchor &&
+//       `Demonstrate “${anchor}” today: choose one decision or meeting and make a clear move that reflects it. Block 15 minutes to prep.`) ||
+//     (edu &&
+//       `Practice “${edu}”: identify one moment today to apply it intentionally. Write what you’ll do in 1 sentence and schedule it.`) ||
+//     (caution &&
+//       `Balance your caution area (“${(caution as any).area}”): define a small guardrail you’ll use in the next meeting, then reflect for 2 minutes after.`);
+
+//   if (!challenge) {
+//     const t = traits.length ? traits[Math.floor(Math.random() * traits.length)] : undefined;
+//     challenge = t
+//       ? `Apply “${t.trait}” on a live task: spend 15 minutes using it to move something forward, then capture one takeaway.`
+//       : "Pick one small improvement you can ship before noon. Make it visible, even if rough.";
+//   }
 
 
 
-  setDailyChallenge(challenge);
-  // SAVE to storage
-  AsyncStorage.setItem("execCoach:lastDailyChallenge", JSON.stringify(challenge));
-}
+
+
+//   setDailyChallenge(challenge);
+//   // SAVE to storage
+//   AsyncStorage.setItem("execCoach:lastDailyChallenge", JSON.stringify(challenge));
+// }
 
 
   return (
@@ -214,10 +214,10 @@ async function onAskCoach() {
           <Text style={{ fontSize: 36, fontWeight: "700" }}>
             Andrew Weiman's Virtual AI Executive Coach (MVP)
           </Text>
-          <Text style={{ fontSize: 16 }}>
-            Loaded profile for:{" "} - Here is your profile summary:
-            <Text style={{ fontWeight: "600" }}>{displayName}</Text>
-          </Text>
+<Text style={{ fontSize: 16 }}>
+  Here is your profile summary:
+</Text>
+
           <Text style={{ fontSize: 16 }}>
             Core Theme: <Text style={{ fontWeight: "600" }}>{coreTheme}</Text>
           </Text>
@@ -232,14 +232,6 @@ async function onAskCoach() {
           )}
         </View>
 
-        <View style={{ gap: 12, marginTop: 12 }}>
-          <ActionButton label="Expand a Skill" onPress={onExpandSkill} />
-          <ActionButton label="Challenge of the Day" onPress={onChallengeOfDay} />
-
-
-
-          
-        </View>
 
 
 <Card title="Choose a Coach Style">
@@ -285,8 +277,6 @@ async function onAskCoach() {
   </Text>
 </Card>
 
-
-// <Text testID="coach-probe">DEBUG coachStyle: {String(coachStyle)}</Text>
 
 
         <Card title="Ask one of Andrew's Coaches a question! - v1.2">
@@ -371,14 +361,6 @@ async function onAskCoach() {
           </Card>
         )}
 
-        <Card title="Debug: Profile Introspection">
-  <Text>Type: {typeof profileData}</Text>
-  <Text>Keys: {Object.keys(profileData || {}).join(", ") || "(none)"}</Text>
-  <Text>has traits: {Array.isArray((profileData as any)?.traits) ? "yes" : "no"}</Text>
-  <Text>has skills: {Array.isArray((profileData as any)?.skills) ? "yes" : "no"}</Text>
-  <Text>has attributes: {Array.isArray((profileData as any)?.attributes) ? "yes" : "no"}</Text>
-  <Text>has keyTraits: {Array.isArray((profileData as any)?.keyTraits) ? "yes" : "no"}</Text>
-</Card>
 
       </ScrollView>
     </SafeAreaView>
