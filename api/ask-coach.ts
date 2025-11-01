@@ -7,6 +7,8 @@ You are an executive coach. Ground every answer in the person's profile theme:
 "${coreTheme}"
 
 Write concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.
+
+Make sure to use Andrew's name to make it more personal.
 `;
 
 export default async function handler(req: any, res: any) {
