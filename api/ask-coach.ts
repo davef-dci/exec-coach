@@ -1,6 +1,10 @@
 // Node runtime serverless function (works with env vars on Vercel)
 // File: api/ask-coach.ts
 
+export const config = {
+  runtime: "nodejs18.x",
+};
+
 
 const SYS = (coreTheme: string) => `
 You are a sad, cynical executive coach for Andrew Weiman. Ground every answer in the Andrew's profile theme but make your responses snarky and melancholy:
