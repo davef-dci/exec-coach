@@ -41,12 +41,14 @@ const textOr = (...vals: (string | undefined)[]) =>
 const pickOne = <T,>(arr: T[] | undefined): T | null =>
   arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
 
-async function askCoachRemote(question: string, profile: any): Promise<string> {
+async function askCoachRemote(question: string, profile: any, coachStyle: string): Promise<string> 
+ {
   try {
     const resp = await fetch(ASK_COACH_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, profile }),
+      body: JSON.stringify({ question, profile, coachStyle }),
+
     });
     if (!resp.ok) {
       const text = await resp.text();
@@ -79,6 +81,21 @@ export default function HomeTab() {
   const [askText, setAskText] = useState("");
 const [askReply, setAskReply] = useState<string | null>(null);
 
+type CoachStyleKey = "Nia" | "Raya" | "Vera" | "Lyra" | "Athena" | "Kora";
+
+const COACH_STYLES: { key: CoachStyleKey; label: string }[] = [
+  { key: "Nia", label: "Motivational" },
+  { key: "Raya", label: "Supportive" },
+  { key: "Vera", label: "Collaborative" },
+  { key: "Lyra", label: "Strategic" },
+  { key: "Athena", label: "Transformational" },
+  { key: "Kora", label: "Directive" },
+];
+
+const [coachStyle, setCoachStyle] = useState<CoachStyleKey>("Vera"); // default
+
+
+
 
 useEffect(() => {
   async function loadSaved() {
@@ -104,7 +121,7 @@ async function onAskCoach() {
 
   setAskReply("⏳ Thinking…");
 
-  const answer = await askCoachRemote(q, profileData);
+  const answer = await askCoachRemote(q, profileData, coachStyle);
 
   if (answer.startsWith("Error:") || answer.startsWith("Network error:")) {
     setAskReply("⚠️ Sorry — something went wrong connecting to the coach. Try again in a moment.");
@@ -216,7 +233,41 @@ async function onAskCoach() {
           
         </View>
 
-        <Card title="Ask one of Andrew's Coaches a question! - v1.0">
+
+<Card title="Choose a Coach Style">
+  <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+    {COACH_STYLES.map((s) => {
+      const selected = coachStyle === s.key;
+      return (
+        <Pressable
+          key={s.key}
+          onPress={() => setCoachStyle(s.key)}
+          style={{
+            paddingVertical: 8,
+            paddingHorizontal: 12,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: selected ? "#6366f1" : "#e5e7eb",
+            backgroundColor: selected ? "#eef" : "#fff",
+          }}
+        >
+          <Text style={{ fontWeight: "600" }}>
+            {s.key} · {s.label}
+          </Text>
+        </Pressable>
+      );
+    })}
+  </View>
+  <Text style={{ opacity: 0.7, marginTop: 6 }}>
+    Selected: <Text style={{ fontWeight: "700" }}>{coachStyle}</Text>
+  </Text>
+</Card>
+
+
+// <Text testID="coach-probe">DEBUG coachStyle: {String(coachStyle)}</Text>
+
+
+        <Card title="Ask one of Andrew's Coaches a question! - v1.2">
 <TextInput
   value={askText}
   onChangeText={setAskText}

@@ -7,14 +7,30 @@ export const config = {
 
 
 
-const SYS = (coreTheme: string) => `
-You are a sad, cynical executive coach for Andrew Weiman. Ground every answer in the Andrew's profile theme but make your responses snarky and melancholy:
+const SYS = (coreTheme: string, coachStyle?: string) => {
+  // Map of tones
+  const personas: Record<string, string> = {
+    Nia: "You are Coach Nia — a motivational coach: uplifting, energetic, and encouraging.",
+    Raya: "You are Coach Raya — a supportive coach: gentle, empathetic, and patient.",
+    Vera: "You are Coach Vera — a collaborative coach: calm, balanced, and insightful.",
+    Lyra: "You are Coach Lyra — a strategic coach: focused, clear, and pragmatic.",
+    Athena: "You are Coach Athena — a transformational coach: wise, direct, and thought-provoking.",
+    Kora: "You are Coach Kora — a directive coach: firm, disciplined, and no-nonsense.",
+  };
+
+  const persona = personas[coachStyle ?? "Vera"];
+
+  return `
+${persona}
+
+Ground every answer in Andrew's profile theme:
 "${coreTheme}"
 
-Write depressing, snarky, concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act in the next 15 minutes.
-
-Make sure to use Andrew's name to make it more personal.
+Write concise, practical guidance with 3–5 bullet points and a 1-sentence nudge to act within 15 minutes.
+Make sure to use Andrew’s name to make it personal.
 `;
+};
+
 
 const VERSION = "ask-coach:2025-10-29-01"; // bump this whenever deployed
 
@@ -72,9 +88,13 @@ export default async function handler(req: any, res: any) {
         model: "gpt-4o-mini",
         temperature: 0.6,
 messages: [
-  { role: "system", content: SYS(coreTheme) },
-  { role: "user", content: `Profile (JSON): ${JSON.stringify(userContext)}\n\nQuestion: ${question}` },
+  { role: "system", content: SYS(coreTheme, req.body.coachStyle) },
+  {
+    role: "user",
+    content: `Profile (JSON): ${JSON.stringify(userContext)}\n\nQuestion: ${question}`,
+  },
 ],
+
 
       }),
     });
@@ -90,7 +110,8 @@ messages: [
     return res.status(200).json({
   answer,
   version: VERSION,
-  systemSnippet: SYS(coreTheme).slice(0, 80) // short echo so we know which prompt is active
+  systemSnippet: SYS(coreTheme, req.body.coachStyle).slice(0, 80)
+
 });
 
   } catch (e: any) {
