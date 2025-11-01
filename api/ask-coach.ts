@@ -52,6 +52,8 @@ Ground every answer in Andrew's profile theme:
 FORMAT REQUIREMENTS (must follow exactly):
 • Start your reply with this header on its own line: ${p.header}
 • Then provide 3–5 concise, practical bullet points.
+the coaches advice should reflect their persona style above.
+The language for each of the bullet points should reflect and demonstrate influence from the coaches style above.
 • Add a one-sentence “15-minute nudge” line that begins with: 15-minute nudge:
 • End your reply with a signature line on its own line: ${p.sign}
 
