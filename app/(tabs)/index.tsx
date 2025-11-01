@@ -216,7 +216,7 @@ async function onAskCoach() {
           
         </View>
 
-        <Card title="Ask one of Andrew's Coached a question!">
+        <Card title="Ask one of Andrew's Coaches a question! - v1.0">
 <TextInput
   value={askText}
   onChangeText={setAskText}
